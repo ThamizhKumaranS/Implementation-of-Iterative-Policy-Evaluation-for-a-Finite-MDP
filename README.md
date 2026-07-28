@@ -99,19 +99,64 @@ Where:
 ## Program
 
 ```python
+import gymnasium as gym
+import numpy as np
 
+# Create FrozenLake Environment
+env = gym.make("FrozenLake-v1", is_slippery=False)
+env = env.unwrapped
 
-# -------------------------------------------------
-# Policy Evaluation Function
-# -------------------------------------------------
+# Number of states and actions
+n_states = env.observation_space.n
+n_actions = env.action_space.n
 
+# Random Policy
+policy = np.ones((n_states, n_actions)) / n_actions
 
-# -------------------------------------------------
-# Display Output
-# -------------------------------------------------
+def policy_evaluation(env, policy, gamma=0.99, theta=1e-8):
+    """
+    Performs Iterative Policy Evaluation using the Bellman Expectation Equation.
 
-# Change the parameters and observe the results
+    Parameters:
+        env    : FrozenLake environment
+        policy : Fixed policy
+        gamma  : Discount factor
+        theta  : Convergence threshold
 
+    Returns:
+        V         : State-value function
+        iteration : Number of iterations
+    """
+
+    V = np.zeros(env.observation_space.n)
+    iteration = 0
+
+    while True:
+        delta = 0
+
+        for s in range(env.observation_space.n):
+            v = V[s]
+            new_v = 0
+
+            # Bellman Expectation Equation
+            for a, action_prob in enumerate(policy[s]):
+                for prob, next_state, reward, done in env.P[s][a]:
+                    new_v += action_prob * prob * (
+                        reward + gamma * V[next_state] * (not done)
+                    )
+
+            V[s] = new_v
+            delta = max(delta, abs(v - V[s]))
+
+        iteration += 1
+
+        if delta < theta:
+            break
+
+    return V, iteration
+
+# Evaluate Policy
+V, iterations = policy_evaluation(env, policy)
 ```
 
 ---
@@ -119,14 +164,11 @@ Where:
 ## Output
 
 ```text
-
-Number of Iterations: 
-
-State-Value Function as 4x4 Grid:
-
-
+```
+<img width="853" height="356" alt="Screenshot 2026-07-28 161711" src="https://github.com/user-attachments/assets/8716b04f-b98c-4757-b369-ceabc8c79825" />
 
 ```
+
 ---
 
 ## Result
