@@ -167,7 +167,6 @@ V, iterations = policy_evaluation(env, policy)
 ```
 <img width="853" height="356" alt="Screenshot 2026-07-28 161711" src="https://github.com/user-attachments/assets/8716b04f-b98c-4757-b369-ceabc8c79825" />
 
-```
 
 ---
 
@@ -177,13 +176,7 @@ Iterative policy evaluation was implemented successfully using the Gymnasium Fro
 
 ---
 
-## Inference
 
-```text
-
-
-
-```
 
 
 
